@@ -1,9 +1,12 @@
 package _05_06;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 public class Store {
 
     // Make this method a synchronized method
-    static void purchase(StockChecker stockChecker, int amount) {
+    static synchronized void purchase(StockChecker stockChecker, int amount) {
         int stock = stockChecker.getStock();
         if(stock - amount < 0) {
             System.out.println("Out of stock");
@@ -16,6 +19,15 @@ public class Store {
     }
 
     public static void main(String[] args) {
+        StockChecker stockChecker = new StockChecker();
+
+        ExecutorService executorService = Executors.newFixedThreadPool(4);
+        executorService.submit(() -> purchase(stockChecker, 20));
+        executorService.submit(() -> purchase(stockChecker, 20));
+        executorService.submit(() -> purchase(stockChecker, 20));
+        executorService.submit(() -> purchase(stockChecker, 20));
+
+        executorService.shutdown();
 
         // Create a new StockChecker object.
 
